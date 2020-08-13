@@ -39,14 +39,14 @@ func newNSXTClient(opts nsxtOpts) (*nsxt.APIClient, error) {
 
 func main() {
 	var (
-		listenAddress = kingpin.Flag("web.listen-address", "Address to listen on for web interface and telemetry.").Default(":9744").String()
-		metricsPath   = kingpin.Flag("web.telemetry-path", "Path under which to expose metrics.").Default("/metrics").String()
+		listenAddress = kingpin.Flag("web.listen-address", "Address to listen on for web interface and telemetry.").Default(":9744").OverrideDefaultFromEnvar("WEB_LISTEN_ADDRESS").String()
+		metricsPath   = kingpin.Flag("web.telemetry-path", "Path under which to expose metrics.").Default("/metrics").OverrideDefaultFromEnvar("WEB_TELEMETRY_PATH").String()
 		opts          = nsxtOpts{}
 	)
-	kingpin.Flag("nsxt.host", "URI of NSX-T manager.").Default("localhost").StringVar(&opts.host)
-	kingpin.Flag("nsxt.username", "The username to connect to the NSX-T manager as.").StringVar(&opts.username)
-	kingpin.Flag("nsxt.password", "The password for the NSX-T manager user.").StringVar(&opts.password)
-	kingpin.Flag("nsxt.insecure", "Disable TLS host verification.").Default("true").BoolVar(&opts.insecure)
+	kingpin.Flag("nsxt.host", "URI of NSX-T manager.").Default("localhost").OverrideDefaultFromEnvar("NSXT_HOST").StringVar(&opts.host)
+	kingpin.Flag("nsxt.username", "The username to connect to the NSX-T manager as.").Envar("NSXT_USERNAME").StringVar(&opts.username)
+	kingpin.Flag("nsxt.password", "The password for the NSX-T manager user.").Envar("NSXT_PASSWORD").StringVar(&opts.password)
+	kingpin.Flag("nsxt.insecure", "Disable TLS host verification.").Default("true").OverrideDefaultFromEnvar("NSXT_INSECURE").BoolVar(&opts.insecure)
 
 	promlogConfig := &promlog.Config{}
 	flag.AddFlags(kingpin.CommandLine, promlogConfig)
